@@ -6,6 +6,8 @@ db = redis.Redis(host='localhost', port=6379, db=0)
 STREAM_NAME = "MOS_STREAM"
 STREAM_DATA_STR = "data"
 DEFAULT_TTL_SEC = 10
+DEFAULT_TTL_INTV_MS = 1000
+TIMEOUT_MS = 100
 
 def db_time_us():
     cur_time = db.time()
