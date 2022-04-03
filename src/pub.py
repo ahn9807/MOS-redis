@@ -10,6 +10,3 @@ def push_object(data):
     oid = db.xadd(name=redis_core.STREAM_NAME, fields={
         redis_core.STREAM_DATA_STR: pickle_data,
     })
-
-    print(redis_core.db_time_ns())
-    print(oid)
