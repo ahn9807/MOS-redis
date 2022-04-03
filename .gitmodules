@@ -1,0 +1,6 @@
+[submodule "redis"]
+	path = redis
+	url = https://github.com/redis/redis.git
+[submodule "redis-py"]
+	path = redis-py
+	url = https://github.com/redis/redis-py.git
