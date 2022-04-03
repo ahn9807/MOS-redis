@@ -1,31 +1,18 @@
-from datetime import time
-import time
-
 import redis_core
-from redis_core import db
+from redis_core import redis_conn
 
 
-def redis_callback(raw_data):
-	pickle_data = raw_data
-	print(pickle_data)
+def handle_raw_data(raw_data):
+    pickle_data = raw_data
+    print(pickle_data)
 
-def redis_ttl():
-	if redis_core.DEFAULT_TTL_SEC != 0:
-		db.xtrim(
-			name=redis_core.STREAM_NAME,
-			maxlen=None,
-			minid=redis_core.db_time_ms() - (redis_core.DEFAULT_TTL_SEC + 1) * 1000
-		)
 
 if __name__ == '__main__':
-	last_timestamp = time.time_ns()
-	last_len = db.xlen(name=redis_core.STREAM_NAME)
+    pubsub = redis_conn.pubsub()
 
-	while(1):
-		raw_data = db.xread(streams={redis_core.STREAM_NAME: "$"}, block=5000)
-		redis_callback(raw_data)
+    pubsub.subscribe(redis_core.STREAM_NAME)
 
-		# Remove elements by TTL
-		if time.time_ns() - last_timestamp > redis_core.DEFAULT_TTL_SEC * 1000_000_000:
-			last_timestamp = time.time_ns()
-			redis_ttl()
+    while True:
+        raw_data = pubsub.get_message(timeout=redis_core.TIMEOUT_SEC)
+        if raw_data != None:
+            handle_raw_data(raw_data)

@@ -1,12 +1,9 @@
-from sqlite3 import Timestamp
-from attr import fields
+from email import message
 import redis_core
-from redis_core import db
+from redis_core import redis_conn
 
 
 def push_object(data):
     pickle_data = data
 
-    oid = db.xadd(name=redis_core.STREAM_NAME, fields={
-        redis_core.STREAM_DATA_STR: pickle_data,
-    })
+    redis_conn.publish(channel=redis_core.STREAM_NAME, message=pickle_data)
